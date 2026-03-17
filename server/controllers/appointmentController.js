@@ -94,19 +94,14 @@ export const bookAppointment = async (req, res) => {
         ]);
         console.log("✅ Appointment saved locally");
 
-        // 5.5 FIRE THE NOTIFICATIONS!
-        try {
-            console.log("✉️ Sending confirmation notification...");
-            await sendBookingConfirmation(fullName, email, mobile, {
-                bookingId: customBookingId,
-                service: serviceName,
-                date: appointmentDate,
-                time: startTime
-            });
-            console.log("✅ Notification sent");
-        } catch (notifErr) {
-            console.error("⚠️ Notification failed (but booking is done):", notifErr.message);
-        }
+        // 5.5 FIRE THE NOTIFICATIONS (ASYNCHRONOUSLY)!
+        // We don't 'await' this so the user gets their success screen immediately!
+        sendBookingConfirmation(fullName, email, mobile, {
+            bookingId: customBookingId,
+            service: serviceName,
+            date: appointmentDate,
+            time: startTime
+        }).catch(err => console.error("⚠️ Background notification failed:", err.message));
 
         // 6. Send the Triumph Response!
         res.status(201).json({
