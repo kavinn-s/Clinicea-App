@@ -10,19 +10,27 @@ if (dns.setDefaultResultOrder) {
 
 dotenv.config();
 
-// 1. Setup Email (Strict IPv4 forcing via custom lookup)
+// 1. Setup Email (Combined "Super" Fix for Render IPv6/Timeout)
 console.log("🛠️ Initializing Email Service for user:", process.env.EMAIL_USER ? "FOUND" : "NOT FOUND");
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // Use SSL
-    connectionTimeout: 15000, 
-    greetingTimeout: 15000,
-    // CRITICAL: This is the most robust way to force IPv4 in Node.js
+    port: 587,
+    secure: false, // Use STARTTLS (Port 587)
+    connectionTimeout: 30000, 
+    greetingTimeout: 30000,
+    socketTimeout: 30000,
+    // THE COMBO: Custom lookup + family: 4 + tls: { family: 4 }
     lookup: (hostname, options, callback) => {
-        console.log(`🔍 DNS Lookup for ${hostname} (Forcing IPv4)`);
-        dns.lookup(hostname, { family: 4 }, callback);
+        console.log(`🔍 Forced IPv4 search for: ${hostname}`);
+        dns.lookup(hostname, { family: 4 }, (err, address, family) => {
+            console.log(`📍 Resolved ${hostname} to ${address}`);
+            callback(err, address, family);
+        });
+    },
+    tls: {
+       family: 4, // Another place Gmail/Render sometimes look!
+       minVersion: 'TLSv1.2'
     },
     auth: {
         user: process.env.EMAIL_USER,
