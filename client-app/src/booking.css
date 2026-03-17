@@ -1,0 +1,170 @@
+/* Booking Wizard Styles */
+.wizard-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 0;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stepper */
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+  background-color: white;
+  padding: 16px 32px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+.step {
+  display: flex;
+  align-items: center;
+}
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.step.active .step-circle {
+  background-color: var(--teal-primary);
+  color: white;
+}
+
+.step.completed .step-circle {
+  background-color: #e0eceb;
+  color: var(--teal-primary);
+}
+
+.step.inactive .step-circle {
+  background-color: #f1f5f9;
+  color: #94a3b8;
+}
+
+.step-line {
+  height: 3px;
+  width: 120px;
+  margin: 0 16px;
+  background-color: #f1f5f9;
+  border-radius: 2px;
+  position: relative;
+}
+
+.step-line-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: var(--teal-primary);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Wizard Header */
+.wizard-header {
+  margin-bottom: 24px;
+}
+
+.wizard-title {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.wizard-subtitle {
+  color: var(--text-muted);
+  font-size: 16px;
+}
+
+/* Wizard Content Area */
+.wizard-content {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+/* Action Buttons */
+.wizard-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.wizard-actions button {
+  flex: 1;
+  padding: 16px;
+  font-size: 16px;
+  border-radius: 12px;
+}
+
+.btn-gray {
+  background-color: #e2e8f0;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+/* Panels */
+.panel {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  padding: 24px;
+}
+
+.panel-left {
+  flex: 1;
+}
+
+.panel-right {
+  flex: 1.2;
+}
+
+/* Checkmark Icon Animation */
+.check-icon {
+  animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.payment-card:hover {
+    border-color: #157367 !important;
+    box-shadow: 0 10px 25px -5px rgba(21, 115, 103, 0.1);
+    transform: translateY(-4px);
+}
+
+.animation-fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
