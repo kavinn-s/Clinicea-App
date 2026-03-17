@@ -33,6 +33,17 @@ const BookingWizard = ({ onBackToLanding }) => {
     }
   };
 
+  const handleReset = () => {
+    setSelectedDate(null);
+    setSelectedTime(null);
+    setIsSelectionComplete(false);
+    setIsConfirmationReady(false);
+    setPatientData(null);
+    setBookingResult(null);
+    setError(null);
+    setCurrentStep(2);
+  };
+
   const handleBooking = async () => {
     setLoading(true);
     setError(null);
@@ -158,7 +169,10 @@ const BookingWizard = ({ onBackToLanding }) => {
         />
       )}
       {currentStep === 5 && (
-        <SuccessPage bookingDetails={bookingResult} />
+        <SuccessPage 
+            bookingDetails={bookingResult} 
+            onReset={handleReset}
+        />
       )}
 
       {/* Navigation Footer */}
