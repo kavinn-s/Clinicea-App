@@ -4,12 +4,15 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// 1. Setup Email (using Gmail for now)
+// 1. Setup Email (FORCING IPv4 to avoid ENETUNREACH errors on Render)
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // Use SSL
+    family: 4,    // <-- CRITICAL: Forces IPv4 to bypass Render's IPv6 networking issues!
     auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS // You will need an "App Password" from your Google Account
+        pass: process.env.EMAIL_PASS
     }
 });
 
