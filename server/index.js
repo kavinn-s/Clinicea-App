@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors("https://clinicea-app.vercel.app"));
 app.use(express.json());
 
 // Routes

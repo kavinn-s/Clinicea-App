@@ -125,7 +125,7 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
             Loading available slots...
           </div>
         ) : (
-          <div className="slots-container animation-fade-in" style={{ flex: 1, overflowY: 'auto' }}>
+          <div className="slots-container animation-fade-in">
             <div style={{ fontSize: '14px', color: '#6B7280', marginBottom: '24px' }}>
               {error ? <span style={{color: 'red'}}>{error} (Showing fallbacks)</span> : "Live availability"}
             </div>

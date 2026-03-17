@@ -31,10 +31,14 @@ export const calculateAvailableSlots = (targetDate, bookedAppointments) => {
         });
 
         const slotObject = { time: timeString, available: isAvailable };
-        const hour = currentSlot.getHours();
+        
+        // Use the actual IST hour for bucketing
+        const istHour = parseInt(currentSlot.toLocaleTimeString('en-IN', {
+            hour: '2-digit', hour12: false, timeZone: 'Asia/Kolkata'
+        }));
 
-        if (hour < 12) availableSlots.morning.push(slotObject);
-        else if (hour >= 12 && hour < 16) availableSlots.afternoon.push(slotObject);
+        if (istHour < 12) availableSlots.morning.push(slotObject);
+        else if (istHour >= 12 && istHour < 16) availableSlots.afternoon.push(slotObject);
         else availableSlots.evening.push(slotObject);
 
         currentSlot = slotEnd;
