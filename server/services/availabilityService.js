@@ -4,11 +4,8 @@ export const calculateAvailableSlots = (targetDate, bookedAppointments) => {
     const clinicCloseHour = 19; 
     const slotDurationMinutes = 30; 
 
-    let currentSlot = new Date(`${targetDate}T00:00:00+05:30`);
-    currentSlot.setHours(clinicOpenHour, 0, 0, 0);
-
-    const closingTime = new Date(`${targetDate}T00:00:00+05:30`);
-    closingTime.setHours(clinicCloseHour, 0, 0, 0);
+    let currentSlot = new Date(`${targetDate}T${String(clinicOpenHour).padStart(2, '0')}:00:00+05:30`);
+    const closingTime = new Date(`${targetDate}T${String(clinicCloseHour).padStart(2, '0')}:00:00+05:30`);
 
     const now = new Date();
     const bufferTime = new Date(now.getTime() + 30 * 60000);
