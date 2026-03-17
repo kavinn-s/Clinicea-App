@@ -10,14 +10,16 @@ if (dns.setDefaultResultOrder) {
 
 dotenv.config();
 
-// 1. Setup Email (FORCING IPv4 and Port 587 to avoid Render network blocks)
+// 1. Setup Email (SSL Port 465 with Timeout for Render stability)
 console.log("🛠️ Initializing Email Service for user:", process.env.EMAIL_USER ? "FOUND" : "NOT FOUND");
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // Use STARTTLS
+    port: 465,
+    secure: true, // Use SSL
     family: 4,    // Force IPv4
+    connectionTimeout: 10000, // 10 seconds
+    greetingTimeout: 10000,   // 10 seconds
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
