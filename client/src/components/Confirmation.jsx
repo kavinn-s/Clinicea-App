@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { API_BASE_URL } from '../config';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const GOOGLE_CLIENT_ID = "374816677598-nmr4sgv7cb4jmbl5qovvlf8sfdtpa5kv.apps.googleusercontent.com"; // User should replace this
-
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const Confirmation = ({ selectedDate, selectedTime, onStatusChange }) => {
   const [mobile, setMobile] = useState('');
   const [otp, setOtp] = useState('');
