@@ -74,7 +74,7 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
           <h3 style={{ fontSize: '18px' }}>March 2026</h3>
         </div>
 
-        <div className="calendar-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', textAlign: 'center' }}>
+        <div className="calendar-grid">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
             <div key={day} style={{ fontSize: '12px', color: '#6B7280', marginBottom: '8px' }}>{day}</div>
           ))}
@@ -138,7 +138,7 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
                   </div>
                   <span style={{ fontSize: '12px', color: '#6B7280' }}>{availableSlots.morning.filter(s => s.available).length} available</span>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+                <div className="slots-grid">
                   {availableSlots.morning.map((slot, idx) => {
                     const isBooked = !slot.available;
                     const isSelected = selectedTime === slot.time;
@@ -175,7 +175,7 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
                   </div>
                   <span style={{ fontSize: '12px', color: '#6B7280' }}>{availableSlots.afternoon.filter(s => s.available).length} available</span>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+                <div className="slots-grid">
                   {availableSlots.afternoon.map((slot, idx) => {
                     const isBooked = !slot.available;
                     const isSelected = selectedTime === slot.time;
@@ -212,7 +212,7 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
                   </div>
                   <span style={{ fontSize: '12px', color: '#6B7280' }}>{availableSlots.evening.filter(s => s.available).length} available</span>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+                <div className="slots-grid">
                   {availableSlots.evening.map((slot, idx) => {
                     const isBooked = !slot.available;
                     const isSelected = selectedTime === slot.time;

@@ -3,7 +3,7 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { API_BASE_URL } from '../config';
 
-const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com"; // User should replace this
+const GOOGLE_CLIENT_ID = "374816677598-nmr4sgv7cb4jmbl5qovvlf8sfdtpa5kv.apps.googleusercontent.com"; // User should replace this
 
 const Confirmation = ({ selectedDate, selectedTime, onStatusChange }) => {
   const [mobile, setMobile] = useState('');
@@ -15,17 +15,21 @@ const Confirmation = ({ selectedDate, selectedTime, onStatusChange }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isGoogleLinked, setIsGoogleLinked] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+
+  // Reset verification if mobile changes
+  React.useEffect(() => {
+    setIsVerified(false);
+  }, [mobile]);
 
   // Notify parent when data changes or verification completes
   React.useEffect(() => {
-    const isReady = !!(patientData.fullName && patientData.email && mobile && patientData.dob && (verificationId || !isGoogleLinked));
-    // Actually, verificationId is required for mobile flow, and we check it in handleVerifyOtp
-    // Let's just pass the data and readiness state
+    const isReady = !!(patientData.fullName && patientData.email && mobile && patientData.dob && isVerified);
     onStatusChange({
-        isReady: !!(patientData.fullName && patientData.email && mobile && patientData.dob && verificationId),
+        isReady,
         patientData: { ...patientData, mobile }
     });
-  }, [patientData, mobile, verificationId]);
+  }, [patientData, mobile, isVerified]);
 
   const handleGoogleSuccess = (credentialResponse) => {
     try {
@@ -81,6 +85,7 @@ const Confirmation = ({ selectedDate, selectedTime, onStatusChange }) => {
       });
       const data = await res.json();
       if (data.success) {
+        setIsVerified(true);
         if (!isGoogleLinked) {
             // Standard flow: check for existing patient details
             const lookupRes = await fetch(`${API_BASE_URL}/appointments/lookup`, {
@@ -203,7 +208,7 @@ const Confirmation = ({ selectedDate, selectedTime, onStatusChange }) => {
         {step === 'DETAILS' && (
             <div className="animation-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <div style={{ padding: '12px', backgroundColor: '#ecfdf5', borderRadius: '8px', color: '#065f46', fontSize: '14px', marginBottom: '8px' }}>
-                    ✅ {verificationId ? "Mobile number verified!" : "Signed in with Google!"}
+                    ✅ {isVerified ? "Mobile number verified!" : "Signed in with Google!"}
                 </div>
                 <div>
                     <label style={{ fontSize: '12px', fontWeight: '600', color: '#1F2937' }}>Full Name</label>

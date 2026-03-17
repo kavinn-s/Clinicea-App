@@ -133,10 +133,25 @@
 
 .panel-left {
   flex: 1;
+  align-self: flex-start;
 }
 
 .panel-right {
-  flex: 1.2;
+  flex: 1;
+}
+
+/* Grids */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    text-align: center;
+}
+
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
 }
 
 /* Checkmark Icon Animation */
@@ -167,4 +182,55 @@
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .wizard-container {
+        padding: 20px 16px;
+    }
+
+    .stepper {
+        padding: 12px 16px;
+        margin-bottom: 24px;
+    }
+
+    .step-line {
+        width: 40px;
+        margin: 0 8px;
+    }
+
+    .wizard-title {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .wizard-subtitle {
+        text-align: center;
+    }
+
+    .wizard-content {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+
+    .panel-left, .panel-right {
+        flex: none;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .slots-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .calendar-grid button {
+        height: 36px !important;
+        font-size: 13px !important;
+    }
 }
