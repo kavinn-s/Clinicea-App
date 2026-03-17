@@ -1,6 +1,12 @@
 import nodemailer from 'nodemailer';
 import twilio from 'twilio';
 import dotenv from 'dotenv';
+import dns from 'dns';
+
+// CRITICAL: Force Node to use IPv4 first. Render often fails with Gmail over IPv6.
+if (dns.setDefaultResultOrder) {
+    dns.setDefaultResultOrder('ipv4first');
+}
 
 dotenv.config();
 
