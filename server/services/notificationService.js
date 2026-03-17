@@ -4,12 +4,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// 1. Setup Email (FORCING IPv4 to avoid ENETUNREACH errors on Render)
+// 1. Setup Email (FORCING IPv4 and Port 587 to avoid Render network blocks)
+console.log("🛠️ Initializing Email Service for user:", process.env.EMAIL_USER ? "FOUND" : "NOT FOUND");
+
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // Use SSL
-    family: 4,    // <-- CRITICAL: Forces IPv4 to bypass Render's IPv6 networking issues!
+    port: 587,
+    secure: false, // Use STARTTLS
+    family: 4,    // Force IPv4
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
