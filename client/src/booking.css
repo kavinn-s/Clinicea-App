@@ -256,4 +256,17 @@
         height: 36px !important;
         font-size: 13px !important;
     }
+
+    /* Payment responsiveness */
+    .payment-card {
+        padding: 24px !important;
+    }
+
+    .payment-card h3 {
+        font-size: 20px !important;
+    }
+
+    .payment-card div[style*="font-size: 56px"] {
+        font-size: 32px !important;
+    }
 }

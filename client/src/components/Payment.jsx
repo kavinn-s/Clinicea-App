@@ -37,14 +37,14 @@ const Payment = ({ onComplete, onBack, patientName }) => {
 
             {/* Error placeholder (handled by parent wizard) */}
 
-            <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', marginBottom: '40px' }}>
+            <div className="payment-container" style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', marginBottom: '40px', justifyContent: 'center' }}>
                 {/* Option 1: Booking Fee */}
                 <div
                     className="payment-card"
                     onClick={() => onComplete('PARTIAL')}
                     style={{
-                        flex: 1,
-                        minWidth: '400px',
+                        width: '100%',
+                        maxWidth: '450px',
                         border: '1px solid #e2e8f0',
                         borderRadius: '24px',
                         padding: '40px',
@@ -85,8 +85,8 @@ const Payment = ({ onComplete, onBack, patientName }) => {
                     className="payment-card"
                     onClick={() => onComplete('FULL')}
                     style={{
-                        flex: 1,
-                        minWidth: '400px',
+                        width: '100%',
+                        maxWidth: '450px',
                         border: '3px solid #157367',
                         borderRadius: '24px',
                         padding: '40px',

@@ -237,7 +237,16 @@ const Confirmation = ({ selectedDate, selectedTime, onStatusChange }) => {
                         type="date" 
                         value={patientData.dob}
                         onChange={e => setPatientData({...patientData, dob: e.target.value})}
-                        style={{ padding: '12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px', width: '100%', marginTop: '4px' }}
+                        style={{ 
+                            padding: '12px', 
+                            borderRadius: '8px', 
+                            border: '1px solid #cbd5e1', 
+                            fontSize: '14px', 
+                            width: '100%', 
+                            marginTop: '4px',
+                            minHeight: '48px', // Better for mobile touch
+                            backgroundColor: 'white'
+                        }}
                     />
                 </div>
 

@@ -96,6 +96,8 @@ button {
   justify-content: space-between;
   align-items: center;
   padding: 24px 0;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .logo {
@@ -107,12 +109,14 @@ button {
   font-weight: 600;
   color: var(--teal-primary);
   text-decoration: none;
+  min-width: fit-content;
 }
 
 .header-right {
   display: flex;
   align-items: center;
   gap: 24px;
+  flex-wrap: wrap;
 }
 
 .location-badge {
