@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Sun, Sunset, Moon } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
@@ -6,6 +6,7 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
   const [availableSlots, setAvailableSlots] = useState({ morning: [], afternoon: [], evening: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const slotsRef = useRef(null);
 
   // Mock Calendar Data
   const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
@@ -23,6 +24,13 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
     onTimeChange(null);
     setLoading(true);
     setError(null);
+
+    // Auto-scroll to slots on mobile
+    setTimeout(() => {
+      if (slotsRef.current && window.innerWidth < 768) {
+        slotsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
 
     try {
       const response = await fetch(`${API_BASE_URL}/appointments/slots?date=${targetDate}`);
@@ -115,7 +123,7 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
       </div>
 
       {/* Slots Panel */}
-      <div className="panel panel-right slots-panel" style={{ backgroundColor: selectedDate ? 'white' : '#fafafa', display: 'flex', flexDirection: 'column' }}>
+      <div className="panel panel-right slots-panel" ref={slotsRef} style={{ backgroundColor: selectedDate ? 'white' : '#fafafa', display: 'flex', flexDirection: 'column' }}>
         {!selectedDate ? (
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}>
             Select a date to see available slots
