@@ -25,31 +25,37 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
     setLoading(true);
     setError(null);
 
-    // Auto-scroll to slots on mobile
+    // Improved Auto-scroll for mobile
     setTimeout(() => {
-      if (slotsRef.current && window.innerWidth < 768) {
+      if (slotsRef.current) {
+        // Scroll to show "Loading..." immediately
         slotsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    }, 100);
+    }, 150);
 
     try {
       const response = await fetch(`${API_BASE_URL}/appointments/slots?date=${targetDate}`);
       if (!response.ok) throw new Error('Failed to fetch slots');
       const data = await response.json();
       
-      // Assume calculateAvailableSlots returned something like:
-      // { date: "2026-03-XX", availableSlots: { morning: [], afternoon: [], evening: [] } }
-      // This matches cliniceaService logic. If it's a flat array, we would map it.
       if (data.availableSlots) {
         setAvailableSlots(data.availableSlots);
       } else {
-        // Fallback mock if backend isn't ready
+        // Fallback
         setAvailableSlots({
           morning: [{ time: '09:00', available: true }, { time: '10:00', available: true }],
           afternoon: [{ time: '13:00', available: true }, { time: '14:30', available: true }],
           evening: [{ time: '16:00', available: true }, { time: '17:30', available: true }]
         });
       }
+
+      // Scroll again once slots are actually visible
+      setTimeout(() => {
+        if (slotsRef.current) {
+          slotsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 300);
+
     } catch (err) {
       console.error(err);
       setError("Failed to load slots from server");
