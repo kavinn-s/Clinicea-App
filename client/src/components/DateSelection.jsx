@@ -8,13 +8,15 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
   const [error, setError] = useState(null);
   const slotsRef = useRef(null);
 
-  // Mock Calendar Data
-  const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
   // Get Today's date in IST (since clinician is in Chennai)
   const todayDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
   const today = todayDate.getDate();
   const currentMonthIdx = todayDate.getMonth();
   const currentYear = todayDate.getFullYear();
+
+  // Calculate dynamic days in month
+  const daysInMonthCount = new Date(currentYear, currentMonthIdx + 1, 0).getDate();
+  const daysInMonth = Array.from({ length: daysInMonthCount }, (_, i) => i + 1);
   
   // Calculate start day for the current month grid
   const monthStart = new Date(currentYear, currentMonthIdx, 1);
@@ -22,9 +24,12 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
   
   const monthName = todayDate.toLocaleString('default', { month: 'long' });
 
+  // Core helper to determine if a specific day is a Sunday
+  const isSunday = (day) => (startDay + day - 1) % 7 === 0;
+
   const handleDateClick = async (day) => {
-    // Disable past dates and sundays
-    if (day < today || (day + startDay) % 7 === 0) return;
+    // Disable past dates and Sundays (100% accurate calculation)
+    if (day < today || isSunday(day)) return;
     
     // Create actual YYYY-MM-DD string
     const monthStr = String(currentMonthIdx + 1).padStart(2, '0');
@@ -80,7 +85,6 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
     }
   };
 
-  const isWeekend = (day) => (day + startDay) % 7 === 0;
   const isPast = (day) => day < today;
 
   React.useEffect(() => {
@@ -110,7 +114,7 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
           ))}
           
           {daysInMonth.map((day) => {
-            const isDisabled = isWeekend(day) || isPast(day);
+            const isDisabled = isSunday(day) || isPast(day);
             const monthStr = String(currentMonthIdx + 1).padStart(2, '0');
             const targetDateStr = `${currentYear}-${monthStr}-${String(day).padStart(2, '0')}`;
             const isSelected = selectedDate === targetDateStr;
