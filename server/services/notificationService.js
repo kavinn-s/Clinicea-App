@@ -1,66 +1,47 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import twilio from 'twilio';
 import dotenv from 'dotenv';
-import dns from 'dns';
-
-// CRITICAL: Force Node to use IPv4 first. Render often fails with Gmail over IPv6.
-if (dns.setDefaultResultOrder) {
-    dns.setDefaultResultOrder('ipv4first');
-}
 
 dotenv.config();
 
-// 1. Setup Email (Combined "Super" Fix for Render IPv6/Timeout)
-console.log("🛠️ Initializing Email Service for user:", process.env.EMAIL_USER ? "FOUND" : "NOT FOUND");
+// 1. Setup Resend (API-based Email - Guaranteed to work on Railway/Render)
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // Use STARTTLS (Port 587)
-    connectionTimeout: 30000, 
-    greetingTimeout: 30000,
-    socketTimeout: 30000,
-    // THE COMBO: Custom lookup + family: 4 + tls: { family: 4 }
-    lookup: (hostname, options, callback) => {
-        console.log(`🔍 Forced IPv4 search for: ${hostname}`);
-        dns.lookup(hostname, { family: 4 }, (err, address, family) => {
-            console.log(`📍 Resolved ${hostname} to ${address}`);
-            callback(err, address, family);
-        });
-    },
-    tls: {
-       family: 4, // Another place Gmail/Render sometimes look!
-       minVersion: 'TLSv1.2'
-    },
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
+console.log("🛠️ Initializing Resend Service:", process.env.RESEND_API_KEY ? "FOUND" : "NOT FOUND");
 
 export const sendBookingConfirmation = async (patientName, email, mobile, bookingDetails) => {
     try {
-        // Send Email if they provided one
-        if (email) {
-            const mailOptions = {
-                from: process.env.EMAIL_USER,
-                to: email,
+        // Send Email via Resend API
+        if (email && process.env.RESEND_API_KEY) {
+            const { data, error } = await resend.emails.send({
+                from: "Clinicea Booking <onboarding@resend.dev>", // Note: For custom domains, you'd verify them in Resend
+                to: [email],
                 subject: `Appointment Confirmed: Dr. Sindhu's Skin Clinic`,
                 html: `
-                    <h2>You're all set, ${patientName}! 🎉</h2>
-                    <p>Your appointment has been confirmed.</p>
-                    <div style="background-color: #f3f4f6; padding: 15px; border-radius: 8px;">
-                        <p><strong>Service:</strong> ${bookingDetails.service}</p>
-                        <p><strong>Date:</strong> ${bookingDetails.date}</p>
-                        <p><strong>Time:</strong> ${bookingDetails.time}</p>
-                        <p><strong>Booking ID:</strong> ${bookingDetails.bookingId}</p>
+                    <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
+                        <h2 style="color: #4f46e5;">You're all set, ${patientName}! 🎉</h2>
+                        <p>Your appointment has been confirmed at Dr. Sindhu's Skin Clinic.</p>
+                        
+                        <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <p style="margin: 5px 0;"><strong>Service:</strong> ${bookingDetails.service}</p>
+                            <p style="margin: 5px 0;"><strong>Date:</strong> ${bookingDetails.date}</p>
+                            <p style="margin: 5px 0;"><strong>Time:</strong> ${bookingDetails.time}</p>
+                            <p style="margin: 5px 0;"><strong>Booking ID:</strong> ${bookingDetails.bookingId}</p>
+                        </div>
+
+                        <p>📍 <strong>Location:</strong> Velachery Main Road, Chennai</p>
+                        <p style="color: #6b7280; font-size: 0.9em; margin-top: 20px;">
+                            <em>Please arrive 15 minutes early and bring a valid ID.</em>
+                        </p>
                     </div>
-                    <p>📍 <strong>Location:</strong> Velachery Main Road, Chennai</p>
-                    <p><em>Please arrive 15 minutes early and bring a valid ID and any medical reports.</em></p>
                 `
-            };
-            await transporter.sendMail(mailOptions);
-            console.log(`📧 Email confirmation sent to ${email}`);
+            });
+
+            if (error) {
+                console.error("❌ Resend Error Details:", error);
+            } else {
+                console.log(`📧 Resend Email sent successfully! ID: ${data?.id}`);
+            }
         }
 
         // Send SMS via Twilio (If credentials are in .env)
