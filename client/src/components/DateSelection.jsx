@@ -10,15 +10,26 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
 
   // Mock Calendar Data
   const daysInMonth = Array.from({ length: 31 }, (_, i) => i + 1);
-  const startDay = 0; // Assuming Sunday start
-  const today = 17;
+  // Get Today's date in IST (since clinician is in Chennai)
+  const todayDate = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+  const today = todayDate.getDate();
+  const currentMonthIdx = todayDate.getMonth();
+  const currentYear = todayDate.getFullYear();
+  
+  // Calculate start day for the current month grid
+  const monthStart = new Date(currentYear, currentMonthIdx, 1);
+  const startDay = monthStart.getDay(); // 0 (Sun) to 6 (Sat)
+  
+  const monthName = todayDate.toLocaleString('default', { month: 'long' });
 
   const handleDateClick = async (day) => {
     // Disable past dates and sundays
-    if (day < today || (day + startDay - 1) % 7 === 0) return;
+    if (day < today || (day + startDay) % 7 === 0) return;
     
     // Create actual YYYY-MM-DD string
-    const targetDate = `2026-03-${String(day).padStart(2, '0')}`;
+    const monthStr = String(currentMonthIdx + 1).padStart(2, '0');
+    const dayStr = String(day).padStart(2, '0');
+    const targetDate = `${currentYear}-${monthStr}-${dayStr}`;
     
     onDateChange(targetDate);
     onTimeChange(null);
@@ -28,7 +39,6 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
     // Improved Auto-scroll for mobile
     setTimeout(() => {
       if (slotsRef.current) {
-        // Scroll to show "Loading..." immediately
         slotsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }, 150);
@@ -70,7 +80,7 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
     }
   };
 
-  const isWeekend = (day) => (day + startDay - 1) % 7 === 0;
+  const isWeekend = (day) => (day + startDay) % 7 === 0;
   const isPast = (day) => day < today;
 
   React.useEffect(() => {
@@ -86,17 +96,23 @@ const DateSelection = ({ onSelectionComplete, onDateChange, onTimeChange, select
       {/* Calendar Panel */}
       <div className="panel panel-left calendar-panel">
         <div className="calendar-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-          <h3 style={{ fontSize: '18px' }}>March 2026</h3>
+          <h3 style={{ fontSize: '18px' }}>{monthName} {currentYear}</h3>
         </div>
 
         <div className="calendar-grid">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
             <div key={day} style={{ fontSize: '12px', color: '#6B7280', marginBottom: '8px' }}>{day}</div>
           ))}
+
+          {/* Empty cells for start day alignment */}
+          {Array.from({ length: startDay }).map((_, i) => (
+            <div key={`empty-${i}`} />
+          ))}
           
           {daysInMonth.map((day) => {
             const isDisabled = isWeekend(day) || isPast(day);
-            const targetDateStr = `2026-03-${String(day).padStart(2, '0')}`;
+            const monthStr = String(currentMonthIdx + 1).padStart(2, '0');
+            const targetDateStr = `${currentYear}-${monthStr}-${String(day).padStart(2, '0')}`;
             const isSelected = selectedDate === targetDateStr;
             
             return (
